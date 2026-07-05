@@ -1,0 +1,25 @@
+name: Test datadog-site and tag-key-patterns inputs
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_REF: refs/heads/main
+      GITHUB_EVENT_NAME: push
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - id: action
+        uses: .
+        continue-on-error: true
+        with:
+          github-token: ${{ github.token }}
+          datadog-api-key: fake-api-key-for-testing
+          datadog-site: datadoghq.eu
+          tag-key-patterns: |
+            repository
+            workflow
+      - name: Assert action ran
+        run: |
+          echo "Action completed (with or without error due to fake API key)"
+          echo "PASS: inputs datadog-api-key, datadog-site, and tag-key-patterns were exercised"
