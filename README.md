@@ -1,1 +1,15 @@
-# int128-datadog-actions-metrics
+# int128/datadog-actions-metrics
+
+submit metrics of GitHub Actions to Datadog
+
+Hardened by [Chainguard](https://www.chainguard.dev) from the upstream action at [https://github.com/int128/datadog-actions-metrics](https://github.com/int128/datadog-actions-metrics).
+
+## Versions
+
+| Version | Tag | Upstream commit |
+|---------|-----|-----------------|
+| v1.173.0 | [`v1.173.0`](https://github.com/chainguard-actions/int128-datadog-actions-metrics/tree/v1.173.0) | [`cb2c201`](https://github.com/int128/datadog-actions-metrics/commit/cb2c2011b2a14cb9a75fbec32d1fec545a34f34f) |
+
+## Privacy
+
+This Action contacts Chainguard's licensing server to verify authorization. Connection metadata (IP address, GitHub repository identifier, timestamp, and any metadata encoded in the auth token) is transmitted to Chainguard, Inc. even if authorization is denied in accordance with our [Privacy Notice](https://www.chainguard.dev/legal/privacy-notice)
