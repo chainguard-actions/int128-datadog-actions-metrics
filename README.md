@@ -8,6 +8,7 @@ Hardened by [Chainguard](https://www.chainguard.dev) from the upstream action at
 
 | Version | Tag | Upstream commit |
 |---------|-----|-----------------|
+| v1.172.0 | [`v1.172.0`](https://github.com/chainguard-actions/int128-datadog-actions-metrics/tree/v1.172.0) | [`3e95ce9`](https://github.com/int128/datadog-actions-metrics/commit/3e95ce9482fc9e4d3c1857f1e87f4efadeee4320) |
 | v1.173.0 | [`v1.173.0`](https://github.com/chainguard-actions/int128-datadog-actions-metrics/tree/v1.173.0) | [`cb2c201`](https://github.com/int128/datadog-actions-metrics/commit/cb2c2011b2a14cb9a75fbec32d1fec545a34f34f) |
 
 ## Privacy
