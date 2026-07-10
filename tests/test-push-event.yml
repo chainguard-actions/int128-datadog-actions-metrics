@@ -1,0 +1,29 @@
+name: Test push event metrics (dry-run)
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_REF: refs/heads/main
+      GITHUB_EVENT_NAME: push
+      GITHUB_REPOSITORY: test-owner/test-repo
+      GITHUB_RUN_ID: "12345"
+      GITHUB_RUN_NUMBER: "1"
+      GITHUB_WORKFLOW: "Test Workflow"
+      GITHUB_ACTOR: "test-actor"
+      GITHUB_SHA: "abc1234def5678901234567890abcdef12345678"
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - id: action
+        uses: .
+        with:
+          github-token: ${{ github.token }}
+          # No datadog-api-key → dry-run mode
+          datadog-tags: |
+            env:test
+            team:platform
+      - name: Assert action completed for push event
+        run: |
+          echo "Action completed successfully for push event in dry-run mode"
+          echo "PASS"

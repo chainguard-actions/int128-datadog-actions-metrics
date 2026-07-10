@@ -1,0 +1,28 @@
+name: Test pull_request event metrics (dry-run)
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_REF: refs/pull/1/merge
+      GITHUB_EVENT_NAME: pull_request
+      GITHUB_HEAD_REF: feature-branch
+      GITHUB_BASE_REF: main
+      GITHUB_REPOSITORY: test-owner/test-repo
+      GITHUB_RUN_ID: "12345"
+      GITHUB_RUN_NUMBER: "1"
+      GITHUB_WORKFLOW: "Test Workflow"
+      GITHUB_ACTOR: "test-actor"
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - id: action
+        uses: .
+        with:
+          github-token: ${{ github.token }}
+          # No datadog-api-key → dry-run mode
+          send-pull-request-labels: 'false'
+      - name: Assert action completed for pull_request event
+        run: |
+          echo "Action completed successfully for pull_request event in dry-run mode"
+          echo "PASS"
