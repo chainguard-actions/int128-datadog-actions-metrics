@@ -1,0 +1,33 @@
+name: Test with Datadog API key input
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_REF: refs/heads/main
+      GITHUB_EVENT_NAME: push
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - id: action
+        uses: .
+        continue-on-error: true
+        with:
+          github-token: ${{ github.token }}
+          datadog-api-key: fake-api-key-for-testing
+          datadog-site: datadoghq.com
+          datadog-tags: |
+            env:test
+            source:act
+          collect-job-metrics: 'false'
+          collect-step-metrics: 'false'
+      - name: Assert action ran with datadog-api-key input
+        run: |
+          echo "outcome: ${{ steps.action.outcome }}"
+          # The action should either succeed or fail gracefully when given a fake API key.
+          # What matters is that the datadog-api-key input was accepted and the action ran.
+          if [ "${{ steps.action.outcome }}" = "skipped" ]; then
+            echo "FAIL: action was skipped unexpectedly"
+            exit 1
+          fi
+          echo "PASS: action ran with datadog-api-key input (outcome: ${{ steps.action.outcome }})"

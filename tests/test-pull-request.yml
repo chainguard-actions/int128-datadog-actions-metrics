@@ -1,0 +1,29 @@
+name: Test pull request event
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_REF: refs/pull/1/merge
+      GITHUB_EVENT_NAME: pull_request
+      GITHUB_HEAD_REF: feature-branch
+      GITHUB_BASE_REF: main
+      GITHUB_REPOSITORY: test-owner/test-repo
+      GITHUB_RUN_ID: "11111"
+      GITHUB_RUN_NUMBER: "5"
+      GITHUB_WORKFLOW: pr-workflow
+      GITHUB_SHA: cafebabe1234567890abcdef1234567890abcdef
+      GITHUB_ACTOR: pr-author
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - name: Run action for pull request event (dry-run)
+        id: action
+        uses: .
+        with:
+          github-token: ${{ github.token }}
+          send-pull-request-labels: 'false'
+      - name: Assert action completed without error
+        run: |
+          echo "Action completed successfully for pull request event"
+          echo "PASS"

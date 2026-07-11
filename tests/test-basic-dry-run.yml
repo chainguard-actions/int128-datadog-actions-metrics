@@ -1,0 +1,26 @@
+name: Test basic dry-run (no API key)
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_REF: refs/heads/main
+      GITHUB_EVENT_NAME: push
+      GITHUB_REPOSITORY: test-owner/test-repo
+      GITHUB_RUN_ID: "12345"
+      GITHUB_RUN_NUMBER: "1"
+      GITHUB_WORKFLOW: test-workflow
+      GITHUB_SHA: abc1234def5678901234567890abcdef12345678
+      GITHUB_ACTOR: test-actor
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - name: Run action in dry-run mode (no datadog-api-key)
+        id: action
+        uses: .
+        with:
+          github-token: ${{ github.token }}
+      - name: Assert action completed without error
+        run: |
+          echo "Action completed successfully in dry-run mode"
+          echo "PASS"
