@@ -1,0 +1,28 @@
+name: Test distribution metrics and filtering options
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_REF: refs/heads/main
+      GITHUB_EVENT_NAME: push
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - name: Run action with distribution metrics and filtering options
+        id: action
+        uses: .
+        with:
+          github-token: ${{ github.token }}
+          prefer-distribution-workflow-run-metrics: 'true'
+          prefer-distribution-job-metrics: 'true'
+          prefer-distribution-step-metrics: 'true'
+          metrics-patterns: |
+            github.actions.workflow_run.*
+          tag-key-patterns: |
+            repo
+            branch
+      - name: Assert action completed successfully with distribution metrics
+        run: |
+          echo "Action completed with distribution metrics and filtering options in dry-run mode"
+          echo "PASS"

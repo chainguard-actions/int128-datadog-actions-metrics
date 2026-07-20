@@ -1,0 +1,23 @@
+name: Test tag key patterns and PR labels
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - id: action
+        uses: .
+        with:
+          github-token: ${{ github.token }}
+          tag-key-patterns: |
+            branch
+            repository
+          send-pull-request-labels: 'false'
+          datadog-tags: |
+            env:ci
+        # No datadog-api-key means dry-run mode
+      - name: Assert action completed successfully with tag key patterns
+        run: |
+          echo "Action completed in dry-run mode with tag key patterns"
+          echo "PASS"

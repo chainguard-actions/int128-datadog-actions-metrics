@@ -1,0 +1,22 @@
+name: Test collect job and step metrics
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - id: action
+        uses: .
+        with:
+          github-token: ${{ github.token }}
+          collect-job-metrics: 'true'
+          collect-step-metrics: 'true'
+          prefer-distribution-workflow-run-metrics: 'true'
+          prefer-distribution-job-metrics: 'true'
+          prefer-distribution-step-metrics: 'true'
+        # No datadog-api-key means dry-run mode
+      - name: Assert action completed successfully with job and step metrics
+        run: |
+          echo "Action completed in dry-run mode with job and step metrics collection enabled"
+          echo "PASS"
