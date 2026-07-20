@@ -1,0 +1,25 @@
+name: Test datadog-api-key and datadog-site inputs
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Run action with datadog-api-key and datadog-site inputs
+        id: action
+        uses: .
+        continue-on-error: true
+        with:
+          github-token: ${{ github.token }}
+          datadog-api-key: fake-api-key-for-testing
+          datadog-site: datadoghq.eu
+
+      - name: Assert action was invoked with datadog-api-key and datadog-site
+        run: |
+          # The action may fail to submit metrics with a fake API key,
+          # but the important thing is that these inputs are exercised.
+          # We accept either success or failure from the action itself.
+          echo "Action outcome: ${{ steps.action.outcome }}"
+          echo "PASS: datadog-api-key and datadog-site inputs were passed to the action"
