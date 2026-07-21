@@ -1,0 +1,28 @@
+name: Test with datadog-api-key input
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - id: action
+        uses: .
+        continue-on-error: true
+        with:
+          github-token: ${{ github.token }}
+          datadog-api-key: fake-api-key-for-coverage
+          collect-job-metrics: 'false'
+          collect-step-metrics: 'false'
+
+      - name: Assert step was executed (not skipped)
+        env:
+          OUTCOME: ${{ steps.action.outcome }}
+        run: |
+          echo "outcome: $OUTCOME"
+          if [ "$OUTCOME" = "skipped" ]; then
+            echo "FAIL: step was skipped, expected it to run"
+            exit 1
+          fi
+          echo "PASS: step ran with outcome=$OUTCOME (success or failure both acceptable with fake key)"

@@ -1,0 +1,24 @@
+name: Test with metrics and tag key filters
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_REF: refs/heads/main
+      GITHUB_EVENT_NAME: push
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - id: action
+        uses: .
+        with:
+          github-token: ${{ github.token }}
+          metrics-patterns: |
+            github.actions.workflow_run.*
+          tag-key-patterns: |
+            repository
+            branch
+      - name: Assert action completed successfully with filters
+        run: |
+          echo "Action completed in dry-run mode with metrics and tag key filters"
+          echo "PASS"

@@ -1,0 +1,19 @@
+name: Test send-pull-request-labels and custom datadog-site
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - id: action
+        uses: .
+        with:
+          github-token: ${{ github.token }}
+          # No datadog-api-key → dry-run mode
+          datadog-site: datadoghq.eu
+          send-pull-request-labels: 'true'
+      - name: Assert action completed with pull-request-labels and custom site
+        run: |
+          echo "Action completed in dry-run mode with send-pull-request-labels and custom datadog-site"
+          echo "PASS"

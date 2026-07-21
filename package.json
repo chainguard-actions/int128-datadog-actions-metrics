@@ -1,0 +1,39 @@
+{
+  "private": true,
+  "scripts": {
+    "build": "ncc build --source-map --license licenses.txt src/main.ts",
+    "test": "vitest",
+    "graphql-codegen": "graphql-codegen --config graphql.config.ts",
+    "check": "biome migrate --write && biome check --fix"
+  },
+  "type": "module",
+  "dependencies": {
+    "@actions/core": "3.0.1",
+    "@actions/http-client": "4.0.1",
+    "@datadog/datadog-api-client": "1.58.0",
+    "@octokit/action": "8.0.4",
+    "@octokit/plugin-retry": "8.1.0",
+    "@octokit/types": "16.0.0",
+    "graphql": "16.14.2",
+    "minimatch": "10.2.5"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.5.0",
+    "@graphql-codegen/cli": "7.1.2",
+    "@graphql-codegen/import-types-preset": "4.0.1",
+    "@graphql-codegen/typescript": "6.0.2",
+    "@graphql-codegen/typescript-operations": "6.0.3",
+    "@octokit/graphql-schema": "15.26.1",
+    "@octokit/webhooks-examples": "7.6.1",
+    "@octokit/webhooks-types": "7.6.1",
+    "@tsconfig/node20": "20.1.9",
+    "@types/node": "20.19.43",
+    "@types/proxy": "2.0.0",
+    "@vercel/ncc": "0.44.0",
+    "pnpm": "10.34.3",
+    "proxy": "4.0.0",
+    "typescript": "6.0.3",
+    "vitest": "4.1.8"
+  },
+  "packageManager": "pnpm@10.34.3"
+}
