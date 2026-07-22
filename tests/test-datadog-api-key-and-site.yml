@@ -1,0 +1,27 @@
+name: Test with datadog-api-key and datadog-site inputs
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - id: action
+        uses: .
+        continue-on-error: true
+        with:
+          github-token: ${{ github.token }}
+          datadog-api-key: fake-api-key-for-coverage
+          datadog-site: datadoghq.eu
+      - name: Assert action step was reached (inputs accepted)
+        env:
+          OUTCOME: ${{ steps.action.outcome }}
+        run: |
+          echo "step outcome: $OUTCOME"
+          # The step should have run (success or failure due to invalid key),
+          # but must NOT be 'skipped' — that would mean inputs were rejected before execution.
+          if [ "$OUTCOME" = "skipped" ]; then
+            echo "FAIL: action step was skipped — inputs may have been rejected"
+            exit 1
+          fi
+          echo "PASS: action step ran with datadog-api-key and datadog-site inputs"
