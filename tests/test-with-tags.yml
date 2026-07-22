@@ -1,4 +1,4 @@
-name: Test basic dry-run (no API key)
+name: Test dry-run with additional Datadog tags
 on:
   workflow_dispatch:
 jobs:
@@ -10,7 +10,10 @@ jobs:
         uses: .
         with:
           github-token: ${{ github.token }}
-      - name: Assert action completed successfully
+          datadog-tags: |
+            env:test
+            team:platform
+      - name: Assert action completed with tags
         run: |
-          echo "Action completed in dry-run mode (no datadog-api-key)"
+          echo "Action completed in dry-run mode with custom tags"
           echo "PASS"
