@@ -1,4 +1,4 @@
-name: Test distribution metrics mode
+name: Test datadog site and pull request labels options
 on:
   workflow_dispatch:
 jobs:
@@ -6,16 +6,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-      - name: Run action with distribution metrics enabled
+      - name: Run action with datadog-site and send-pull-request-labels options
         id: action
         uses: .
         with:
           github-token: ${{ github.token }}
           # No datadog-api-key means dry-run mode
-          prefer-distribution-workflow-run-metrics: 'true'
-          prefer-distribution-job-metrics: 'true'
-          prefer-distribution-step-metrics: 'true'
+          datadog-site: datadoghq.eu
+          send-pull-request-labels: 'true'
+          datadog-tags: |
+            region:eu
       - name: Assert action completed successfully
         run: |
-          echo "Action completed with distribution metrics enabled in dry-run mode"
+          echo "Action completed with datadog-site and send-pull-request-labels options in dry-run mode"
           echo "PASS: action ran without error"

@@ -1,4 +1,4 @@
-name: Test distribution metrics mode
+name: Test custom tags and metrics patterns
 on:
   workflow_dispatch:
 jobs:
@@ -6,16 +6,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-      - name: Run action with distribution metrics enabled
+      - name: Run action with custom tags and metrics patterns
         id: action
         uses: .
         with:
           github-token: ${{ github.token }}
           # No datadog-api-key means dry-run mode
-          prefer-distribution-workflow-run-metrics: 'true'
-          prefer-distribution-job-metrics: 'true'
-          prefer-distribution-step-metrics: 'true'
+          datadog-tags: |
+            env:test
+            team:platform
+          metrics-patterns: |
+            github.actions.workflow_run.*
+          tag-key-patterns: |
+            env
+            team
       - name: Assert action completed successfully
         run: |
-          echo "Action completed with distribution metrics enabled in dry-run mode"
+          echo "Action completed with custom tags and metrics patterns in dry-run mode"
           echo "PASS: action ran without error"
