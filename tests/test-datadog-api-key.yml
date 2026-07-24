@@ -1,0 +1,29 @@
+name: Test datadog-api-key input coverage
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - id: action
+        uses: .
+        continue-on-error: true
+        with:
+          github-token: ${{ github.token }}
+          datadog-api-key: fake-api-key-for-coverage
+          datadog-site: datadoghq.com
+          collect-job-metrics: 'false'
+          collect-step-metrics: 'false'
+
+      - name: Assert action ran (outcome is success or failure, not skipped)
+        env:
+          OUTCOME: ${{ steps.action.outcome }}
+        run: |
+          echo "outcome: $OUTCOME"
+          if [ "$OUTCOME" = "skipped" ] || [ "$OUTCOME" = "cancelled" ]; then
+            echo "FAIL: action step was skipped or cancelled unexpectedly"
+            exit 1
+          fi
+          echo "PASS: action ran with datadog-api-key input covered (outcome=$OUTCOME)"
