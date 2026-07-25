@@ -16,6 +16,7 @@ Hardened by [Chainguard](https://www.chainguard.dev) from the upstream action at
 | v1.174.0 | [`v1.174.0`](https://github.com/chainguard-actions/int128-datadog-actions-metrics/tree/v1.174.0) | [`b744562`](https://github.com/int128/datadog-actions-metrics/commit/b7445624013352703f2ab1bb7d764fa0a27e17a8) |
 | v1.175.0 | [`v1.175.0`](https://github.com/chainguard-actions/int128-datadog-actions-metrics/tree/v1.175.0) | [`d20f04d`](https://github.com/int128/datadog-actions-metrics/commit/d20f04dd5f991cb8dff9485ce0b7c816f2e7aa1f) |
 | v1.176.0 | [`v1.176.0`](https://github.com/chainguard-actions/int128-datadog-actions-metrics/tree/v1.176.0) | [`8f1b96e`](https://github.com/int128/datadog-actions-metrics/commit/8f1b96ea03e056653508f6a01ad15007325fc739) |
+| v1.177.0 | [`v1.177.0`](https://github.com/chainguard-actions/int128-datadog-actions-metrics/tree/v1.177.0) | [`93aaeff`](https://github.com/int128/datadog-actions-metrics/commit/93aaeff5fe3a7e89d9efab2dd12c04cfb06a02ed) |
 
 ## Privacy
 
