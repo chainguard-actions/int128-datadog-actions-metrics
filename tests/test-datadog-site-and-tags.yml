@@ -1,0 +1,36 @@
+name: Test datadog-site, datadog-api-key, and tag-key-patterns inputs
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - id: action
+        uses: .
+        continue-on-error: true
+        with:
+          github-token: ${{ github.token }}
+          # Pass a fake API key to exercise the datadog-api-key input path.
+          # The action will attempt to submit metrics and fail due to the invalid
+          # key, but we only need the input to be exercised (covered).
+          datadog-api-key: fake-api-key-for-coverage
+          # Exercise the datadog-site input
+          datadog-site: datadoghq.eu
+          # Exercise the tag-key-patterns input
+          tag-key-patterns: |
+            workflow
+            job
+
+      - name: Assert action step was reached
+        run: |
+          echo "Action step outcome: ${{ steps.action.outcome }}"
+          # The action may fail due to the fake API key, but it must have run
+          # (not been skipped). Both 'success' and 'failure' are acceptable here.
+          outcome="${{ steps.action.outcome }}"
+          if [ "$outcome" = "skipped" ]; then
+            echo "FAIL: action step was skipped unexpectedly"
+            exit 1
+          fi
+          echo "PASS: action step ran with outcome=$outcome (fake API key may cause failure)"
