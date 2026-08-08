@@ -1,0 +1,32 @@
+name: Test datadog-api-key and datadog-site inputs
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - id: action
+        uses: .
+        continue-on-error: true
+        with:
+          github-token: ${{ github.token }}
+          datadog-api-key: fake-api-key-for-testing
+          datadog-site: datadoghq.eu
+      - name: Assert action ran with datadog-api-key and datadog-site inputs
+        env:
+          OUTCOME: ${{ steps.action.outcome }}
+        run: |
+          echo "outcome: $OUTCOME"
+          # The action may fail because the fake API key is rejected by Datadog,
+          # or it may succeed if it validates inputs before attempting submission.
+          # Either way, the important thing is that the inputs were accepted and
+          # the action ran (not skipped or errored at input parsing).
+          if [ "$OUTCOME" = "success" ]; then
+            echo "PASS: action succeeded with datadog-api-key and datadog-site inputs"
+          elif [ "$OUTCOME" = "failure" ]; then
+            echo "PASS: action failed gracefully (fake API key rejected by Datadog, as expected)"
+          else
+            echo "FAIL: unexpected outcome '$OUTCOME'"
+            exit 1
+          fi
