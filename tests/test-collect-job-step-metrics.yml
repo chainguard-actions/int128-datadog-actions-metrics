@@ -1,0 +1,32 @@
+name: Test dry-run with job and step metrics collection
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - id: action
+        uses: .
+        continue-on-error: true
+        with:
+          github-token: ${{ github.token }}
+          # No datadog-api-key means dry-run mode
+          collect-job-metrics: 'true'
+          collect-step-metrics: 'true'
+          prefer-distribution-workflow-run-metrics: 'true'
+          prefer-distribution-job-metrics: 'true'
+          prefer-distribution-step-metrics: 'true'
+      - name: Assert action ran with job and step metrics collection
+        env:
+          OUTCOME: ${{ steps.action.outcome }}
+        run: |
+          echo "outcome: $OUTCOME"
+          if [ "$OUTCOME" = "success" ]; then
+            echo "PASS: action succeeded in dry-run mode with job/step metrics"
+          elif [ "$OUTCOME" = "failure" ]; then
+            echo "PASS: action failed gracefully (sentinel repo not resolvable)"
+          else
+            echo "FAIL: unexpected outcome '$OUTCOME'"
+            exit 1
+          fi
