@@ -1,0 +1,72 @@
+name: Test push event metrics in dry-run
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - name: Write push event payload
+        run: |
+          cat > "$RUNNER_TEMP/push-event.json" <<'EOF'
+          {
+            "ref": "refs/heads/main",
+            "created": false,
+            "deleted": false,
+            "forced": true,
+            "repository": {
+              "name": "example-repo",
+              "default_branch": "main",
+              "owner": { "login": "example-owner" }
+            },
+            "sender": { "login": "octocat", "type": "User" }
+          }
+          EOF
+      - id: action
+        uses: .
+        with:
+          datadog-tags: |
+            team:platform
+      - name: Run shipped dist with a push event and capture dry-run output
+        env:
+          TOKEN: ${{ github.token }}
+        run: |
+          set -o pipefail
+          env \
+            GITHUB_EVENT_NAME=push \
+            GITHUB_EVENT_PATH="$RUNNER_TEMP/push-event.json" \
+            "INPUT_GITHUB-TOKEN=$TOKEN" \
+            "INPUT_GITHUB-TOKEN-RATE-LIMIT-METRICS=$TOKEN" \
+            "INPUT_DATADOG-TAGS=team:platform" \
+            "INPUT_METRICS-PATTERNS=github.actions.push.*" \
+            "INPUT_TAG-KEY-PATTERNS=" \
+            "INPUT_COLLECT-JOB-METRICS=false" \
+            "INPUT_COLLECT-STEP-METRICS=false" \
+            "INPUT_PREFER-DISTRIBUTION-WORKFLOW-RUN-METRICS=false" \
+            "INPUT_PREFER-DISTRIBUTION-JOB-METRICS=false" \
+            "INPUT_PREFER-DISTRIBUTION-STEP-METRICS=false" \
+            "INPUT_SEND-PULL-REQUEST-LABELS=false" \
+            node "$GITHUB_WORKSPACE/dist/index.js" 2>&1 | tee "$RUNNER_TEMP/out.log"
+      - name: Assert push metrics were emitted
+        run: |
+          OUT="$RUNNER_TEMP/out.log"
+          for needle in \
+            'github.actions.push.total' \
+            'repository_owner:example-owner' \
+            'repository_name:example-repo' \
+            'sender:octocat' \
+            'ref:refs/heads/main' \
+            'forced:true' \
+            'default_branch:true' \
+            'team:platform' \
+            'dry-run'; do
+            if ! grep -qF "$needle" "$OUT"; then
+              echo "FAIL: expected '$needle' in output"
+              exit 1
+            fi
+          done
+          if grep -q '::error' "$OUT"; then
+            echo "FAIL: action reported an error"
+            exit 1
+          fi
+          echo "PASS"
